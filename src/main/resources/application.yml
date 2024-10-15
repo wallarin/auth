@@ -1,0 +1,50 @@
+# 기본 설정
+spring:
+  application:
+    name: auth
+  output:
+    ansi:
+      enabled: always
+
+  jpa:
+    database-platform: org.hibernate.dialect.OracleDialect
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+
+
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+
+server:
+  port: 8090
+
+---
+# Windows 프로파일 설정
+spring:
+  config:
+    activate:
+      on-profile: windows
+  datasource:
+    url: jdbc:oracle:thin:@T8JYGUYZG9U0AV4P_high?TNS_ADMIN=C:/class/Oracle_Wallet
+    username: ENC(2lMEtf16/6zCpxXRfTgSxA2srkJdwIffIm5pcSinj67rJxV6jLZJKFFcoAsK6ns2)
+    password: ENC(j0mkJpV54MTaKyKNGyPivF91cxGrWCk9iGdU+m4+guYe630ma4MybCaEI/ZgkJ4L)
+    driver-class-name: oracle.jdbc.OracleDriver
+
+jasypt:
+  encryptor:
+    bean: jasyptStringEncryptor
+
+---
+# Linux 프로파일 설정
+spring:
+  config:
+    activate:
+      on-profile: linux
+  datasource:
+    url: jdbc:oracle:thin:@T8JYGUYZG9U0AV4P_high?TNS_ADMIN=/home/ubuntu/Oracle_Wallet
+    username: ADMIN
+    password: rkdmf546!@A1
+    driver-class-name: oracle.jdbc.OracleDriver
