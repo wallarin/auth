@@ -9,6 +9,7 @@ import net.nurigo.sdk.message.model.Message;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -22,10 +23,19 @@ public class SmsVerificationController {
 
     public SmsVerificationController() {
         Properties properties = new Properties();
-        try {
-            // config.properties 파일을 읽어옴
-            FileInputStream fis = new FileInputStream("src/main/resources/apiKey.properties");
-            properties.load(fis);
+//        try {
+//            // config.properties 파일을 읽어옴
+//            FileInputStream fis = new FileInputStream("src/main/resources/apiKey.properties");
+//            properties.load(fis);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("apiKey.properties")) {
+            if (inputStream == null) {
+                throw new IOException("파일을 찾을 수 없습니다: apiKey.properties");
+            }
+            properties.load(inputStream);
         } catch (IOException e) {
             e.printStackTrace();
         }

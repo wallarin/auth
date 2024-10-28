@@ -8,6 +8,7 @@ import org.springframework.web.filter.CorsFilter;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 @Configuration
@@ -19,9 +20,17 @@ public class CorsConfig {
 
         // 설정 파일에서 IP 주소 읽기
         Properties properties = new Properties();
-        try {
-            FileInputStream fis = new FileInputStream("src/main/resources/cors-config.properties");
-            properties.load(fis);
+//        try {
+//            FileInputStream fis = new FileInputStream("src/main/resources/cors-config.properties");
+//            properties.load(fis);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("cors-config.properties")) {
+            if (inputStream == null) {
+                throw new IOException("파일을 찾을 수 없습니다: cors-config.properties");
+            }
+            properties.load(inputStream);
         } catch (IOException e) {
             e.printStackTrace();
         }
