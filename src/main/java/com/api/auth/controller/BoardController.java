@@ -3,6 +3,7 @@ package com.api.auth.controller;
 import com.api.auth.DTO.Board;
 import com.api.auth.DTO.PostResponse;
 import com.api.auth.DTO.PostUpdate;
+import com.api.auth.enums.LikeDislikeStatus;
 import com.api.auth.service.BoardService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,12 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping({"api/board"})
@@ -34,12 +34,24 @@ public class BoardController {
     @GetMapping("/list")
     public ResponseEntity<Page<PostResponse>> getAllPosts(
             @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "perSize", defaultValue = "10") int perSize
+            @RequestParam(value = "perSize", defaultValue = "10") int perSize,
+            @RequestParam(value = "loginId", defaultValue = "unknown") String loginId
     ) {
 
         System.out.println(page);
         Pageable pageable = PageRequest.of(page, perSize);
-        Page<PostResponse> posts = boardService.getAllPosts(pageable);
+        Page<PostResponse> posts = boardService.getAllPosts(pageable, loginId);
+        return ResponseEntity.ok(posts);  // 글 목록을 반환
+    }
+
+    // 게시글 상세보기
+    @GetMapping("view/{postId}")
+    public ResponseEntity<PostResponse> getDetailPosts(
+            @PathVariable("postId") Long postId,
+            @RequestParam(value = "loginId", defaultValue = "unknown") String loginId
+    ) {
+
+        PostResponse posts = boardService.getPostDetail(postId, loginId);
         return ResponseEntity.ok(posts);  // 글 목록을 반환
     }
 
@@ -79,5 +91,20 @@ public class BoardController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build(); // 404 Not Found 응답
         }
+    }
+
+    @PostMapping("/{postId}/like")
+    public ResponseEntity<String> likePost(
+            @PathVariable("postId") Long postId,
+            @RequestParam("userId") String userId
+    ) {
+        LikeDislikeStatus status = boardService.likePost(postId, userId);
+        return switch (status) {
+            case SUCCESS -> ResponseEntity.ok("추천되었습니다.");
+            case ALREADY_DONE -> ResponseEntity.ok("추천이 취소되었습니다.");
+            case OWN_COMMENT -> ResponseEntity.ok("본인 글에는 추천할 수 없습니다.");
+            default -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("추천 처리 중 오류가 발생했습니다.");
+        };
+
     }
 }

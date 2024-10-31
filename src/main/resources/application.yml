@@ -45,6 +45,6 @@ spring:
       on-profile: linux
   datasource:
     url: jdbc:oracle:thin:@T8JYGUYZG9U0AV4P_high?TNS_ADMIN=/home/ubuntu/Oracle_Wallet
-    username: ADMIN
-    password: rkdmf546!@A1
+    username: ENC(2lMEtf16/6zCpxXRfTgSxA2srkJdwIffIm5pcSinj67rJxV6jLZJKFFcoAsK6ns2)
+    password: ENC(j0mkJpV54MTaKyKNGyPivF91cxGrWCk9iGdU+m4+guYe630ma4MybCaEI/ZgkJ4L)
     driver-class-name: oracle.jdbc.OracleDriver

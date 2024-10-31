@@ -10,7 +10,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -40,8 +39,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth//((AuthorizeHttpRequestsConfigurer.AuthorizedUrl)((AuthorizeHttpRequestsConfigurer.AuthorizedUrl)auth
                         //.requestMatchers(new String[] { "/api/user/**", "/api/send-verification-code", "/api/verify-code" })).permitAll()
-                        .requestMatchers("/api/user/**", "/api/send-verification-code", "/api/verify-code", "/api/board/list").permitAll()
-                        .requestMatchers("/api/board/write").authenticated()
+                        .requestMatchers("/api/user/**", "/api/send-verification-code", "/api/verify-code", "/api/board/list", "/api/board/view/**", "/api/comments/post/{postId}").permitAll()
+                        .requestMatchers("/api/board/write", "/api/board/{postId}/like","/api/comments/{commentId}/like", "/api/comments/{commentId}/dislike").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/board/**").authenticated()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
