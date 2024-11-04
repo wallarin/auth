@@ -40,7 +40,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth//((AuthorizeHttpRequestsConfigurer.AuthorizedUrl)((AuthorizeHttpRequestsConfigurer.AuthorizedUrl)auth
                         //.requestMatchers(new String[] { "/api/user/**", "/api/send-verification-code", "/api/verify-code" })).permitAll()
                         .requestMatchers("/api/user/**", "/api/send-verification-code", "/api/verify-code", "/api/board/list", "/api/board/view/**", "/api/comments/post/{postId}").permitAll()
-                        .requestMatchers("/api/board/write", "/api/board/{postId}/like","/api/comments/{commentId}/like", "/api/comments/{commentId}/dislike").authenticated()
+                        .requestMatchers("/api/board/write", "/api/board/{postId}/like","/api/comments/{commentId}/like", "/api/comments/{commentId}/dislike", "/api/user/information", "/api/user/update").authenticated()
+                        .requestMatchers("/api/inquiry/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/board/**").authenticated()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

@@ -1,10 +1,13 @@
 package com.api.auth.controller;
 
 import com.api.auth.DTO.User;
+import com.api.auth.DTO.UserInfoResponse;
+import com.api.auth.DTO.UserUpdateRequest;
 import com.api.auth.jwt.JwtUtil;
 import com.api.auth.service.UserService;
 import lombok.Generated;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -71,4 +74,27 @@ public class UserController {
         UserDetails userDetails = this.userDetailsService.loadUserByUsername(authRequest.getUserId());
         return this.jwtUtil.generateToken(userDetails);
     }
+
+    @GetMapping("/information")
+    public ResponseEntity<UserInfoResponse> getUserInformation(@RequestParam("userId") String userId) {
+        return userService.getUserInfo(userId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping({"/update"})
+    public ResponseEntity<String> updateUser(
+            @RequestBody UserUpdateRequest updateRequest,
+            Authentication authentication) {
+
+        String userId = authentication.getName(); // 인증된 사용자의 ID 가져오기
+
+        try {
+            userService.updateUser(userId, updateRequest);
+            return ResponseEntity.ok("회원 정보가 성공적으로 업데이트되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원 정보 업데이트에 실패했습니다.");
+        }
+    }
+
 }

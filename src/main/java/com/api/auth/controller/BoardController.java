@@ -35,12 +35,13 @@ public class BoardController {
     public ResponseEntity<Page<PostResponse>> getAllPosts(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "perSize", defaultValue = "10") int perSize,
-            @RequestParam(value = "loginId", defaultValue = "unknown") String loginId
+            @RequestParam(value = "loginId", defaultValue = "unknown") String loginId,
+            @RequestParam(value = "searchType", required = false) String searchType,
+            @RequestParam(value = "searchQuery", required = false) String searchQuery
     ) {
 
-        System.out.println(page);
         Pageable pageable = PageRequest.of(page, perSize);
-        Page<PostResponse> posts = boardService.getAllPosts(pageable, loginId);
+        Page<PostResponse> posts = boardService.getAllPosts(pageable, loginId, searchType, searchQuery);
         return ResponseEntity.ok(posts);  // 글 목록을 반환
     }
 

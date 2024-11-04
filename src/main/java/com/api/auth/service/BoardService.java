@@ -53,8 +53,22 @@ public class BoardService {
 //        return boardRepository.findAll();  // 데이터베이스에서 모든 게시글을 가져옴
 //    }
 
-    public Page<PostResponse> getAllPosts(Pageable pageable, String loginId) {
-        Page<Board> posts = boardRepository.findAll(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),Sort.by(Sort.Direction.DESC, "writeDate", "writeTime")));
+    public Page<PostResponse> getAllPosts(Pageable pageable, String loginId, String searchType, String searchQuery) {
+        Page<Board> posts;
+
+        // 검색 조건에 따라 리포지토리 메서드 호출
+        if (searchQuery != null && !searchQuery.isEmpty()) {
+            posts = switch (searchType) {
+                case "title" -> boardRepository.findByTitleContaining(searchQuery, pageable);
+                case "contents" -> boardRepository.findByContentContaining(searchQuery, pageable);
+                case "title_contents" ->
+                        boardRepository.findByTitleContainingOrContentContaining(searchQuery, pageable);
+                case "writer" -> boardRepository.findByNicknameContaining(searchQuery, pageable);
+                default -> boardRepository.findAll(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "writeDate", "writeTime")));
+            };
+        } else {
+            posts = boardRepository.findAll(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "writeDate", "writeTime")));
+        }
 
         // 게시글 데이터 가공
         List<PostResponse> postResponses = posts.stream().map(post -> {
