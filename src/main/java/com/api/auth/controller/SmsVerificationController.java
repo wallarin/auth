@@ -1,13 +1,12 @@
 package com.api.auth.controller;
 
 import net.nurigo.sdk.NurigoApp;
-import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
-import net.nurigo.sdk.message.response.SingleMessageSentResponse;
-import net.nurigo.sdk.message.service.DefaultMessageService;
-import org.springframework.web.bind.annotation.*;
 import net.nurigo.sdk.message.model.Message;
+import net.nurigo.sdk.message.service.DefaultMessageService;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -60,7 +59,7 @@ public class SmsVerificationController {
         message.setTo(phoneNumber);
         message.setText("인증번호는 " + verificationCode + " 입니다.");
 
-        SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
+        //SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
 
         // 인증번호를 해당 번호와 함께 저장
         verificationCodes.put(phoneNumber, verificationCode);

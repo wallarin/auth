@@ -26,4 +26,8 @@ public interface UserRepository extends JpaRepository<User, String> {
             "FROM User u WHERE u.userId = :userId")
     Optional<UserInfoResponse> findUserInfoByUserId(@Param("userId") String userId);
 
+    Optional<User> findByPhone(String phoneNumber);
+
+    Optional<User> findByUserIdAndPhone(String userId, String phone);
+
 }

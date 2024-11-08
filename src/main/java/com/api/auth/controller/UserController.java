@@ -1,5 +1,6 @@
 package com.api.auth.controller;
 
+import com.api.auth.DTO.PasswordChangeRequest;
 import com.api.auth.DTO.User;
 import com.api.auth.DTO.UserInfoResponse;
 import com.api.auth.DTO.UserUpdateRequest;
@@ -94,6 +95,30 @@ public class UserController {
             return ResponseEntity.ok("회원 정보가 성공적으로 업데이트되었습니다.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원 정보 업데이트에 실패했습니다.");
+        }
+    }
+
+    @PostMapping({"/findId"})
+    public ResponseEntity<?> findeUserId(@RequestParam("phoneNumber") String phoneNumber) {
+        try {
+            String userId = userService.findUserIdByPhoneNumber(phoneNumber);
+            if (userId != null) {
+                return ResponseEntity.ok(userId);
+            } else {
+                return ResponseEntity.status(404).body("User ID not found for the provided phone number.");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("An error occurred while retrieving the user ID.");
+        }
+    }
+
+    @PostMapping("/change-pw")
+    public ResponseEntity<Map<String, Boolean>> changePassword(@RequestBody PasswordChangeRequest request) {
+        try {
+            userService.changePassword(request);
+            return ResponseEntity.ok(Map.of("success", true));
+        } catch (Exception e) {
+            return ResponseEntity.ok(Map.of("success", false));
         }
     }
 

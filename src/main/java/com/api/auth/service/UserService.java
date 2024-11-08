@@ -1,5 +1,6 @@
 package com.api.auth.service;
 
+import com.api.auth.DTO.PasswordChangeRequest;
 import com.api.auth.DTO.User;
 import com.api.auth.DTO.UserInfoResponse;
 import com.api.auth.DTO.UserUpdateRequest;
@@ -95,6 +96,22 @@ public class UserService {
 
         System.out.println("test5");
 
+        userRepository.save(user);
+    }
+
+    public String findUserIdByPhoneNumber(String phoneNumber) {
+        return userRepository.findByPhone(phoneNumber)
+                .map(User::getUserId)
+                .orElse(null);
+    }
+
+    @Transactional
+    public void changePassword(PasswordChangeRequest request) {
+        User user = userRepository.findByUserIdAndPhone(request.getUserId(), request.getPhoneNumber())
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+
+        String encodedPassword = passwordEncoder.encode(request.getNewPassword());
+        user.setPassword(encodedPassword);
         userRepository.save(user);
     }
 
